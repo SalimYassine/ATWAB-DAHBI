@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Phone, Mail, MapPin } from 'lucide-react'
+import { Phone, MapPin } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -40,17 +40,17 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-foreground mb-4">Contactez-Nous</h3>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <Phone size={16} className="text-primary" />
-                <span>+212 6XX XXX XXX</span>
+              <li>
+                <a href="https://wa.me/212660728660" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                  <Phone size={16} className="text-primary" />
+                  <span>+212 6 60 72 86 60</span>
+                </a>
               </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <Mail size={16} className="text-primary" />
-                <span>contact@tapisserie.ma</span>
-              </li>
-              <li className="flex items-start gap-2 text-muted-foreground">
-                <MapPin size={16} className="text-primary mt-0.5 flex-shrink-0" />
-                <span>Marrakech, Maroc</span>
+              <li>
+                <a href="https://www.google.com/maps/place/%D8%A3%D8%AB%D9%88%D8%A7%D8%A8+%D8%A7%D9%84%D8%B0%D9%87%D8%A8%D9%8A%E2%80%AD/@32.3415524,-6.3648528,17z/data=!3m1!4b1!4m6!3m5!1s0xda3878ec70aeda1:0x664769c380215031!8m2!3d32.3415524!4d-6.3648528!16s%2Fg%2F11k224_gby!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-muted-foreground hover:text-primary transition-colors">
+                  <MapPin size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <span>Voir sur Google Maps</span>
+                </a>
               </li>
             </ul>
           </div>

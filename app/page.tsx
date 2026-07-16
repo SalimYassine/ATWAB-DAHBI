@@ -7,14 +7,14 @@ import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
 
 export default function Page() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Form submitted:', formData)
     setSubmitted(true)
-    setFormData({ name: '', email: '', message: '' })
+    setFormData({ name: '', phone: '', message: '' })
     setTimeout(() => setSubmitted(false), 3000)
   }
 
@@ -38,8 +38,8 @@ export default function Page() {
                 <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                   Demander un devis
                 </button>
-                <a href="tel:+212612345678" className="px-8 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition text-center">
-                  Appeler maintenant
+                <a href="https://wa.me/212660728660" target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition text-center">
+                  WhatsApp
                 </a>
               </div>
             </div>
@@ -140,18 +140,8 @@ export default function Page() {
                     <Phone className="text-primary w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Téléphone</p>
-                    <a href="tel:+212612345678" className="text-primary hover:underline">+212 (6) 12 34 56 78</a>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Mail className="text-accent w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Email</p>
-                    <a href="mailto:contact@salonmarocain.com" className="text-primary hover:underline">contact@salonmarocain.com</a>
+                    <p className="font-semibold text-foreground">Téléphone / WhatsApp</p>
+                    <a href="https://wa.me/212660728660" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">+212 6 60 72 86 60</a>
                   </div>
                 </div>
 
@@ -161,7 +151,7 @@ export default function Page() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Localisation</p>
-                    <p className="text-muted-foreground">Marrakech, Maroc</p>
+                    <a href="https://www.google.com/maps/place/%D8%A3%D8%AB%D9%88%D8%A7%D8%A8+%D8%A7%D9%84%D8%B0%D9%87%D8%A8%D9%8A%E2%80%AD/@32.3415524,-6.3648528,17z/data=!3m1!4b1!4m6!3m5!1s0xda3878ec70aeda1:0x664769c380215031!8m2!3d32.3415524!4d-6.3648528!16s%2Fg%2F11k224_gby!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Voir sur Google Maps</a>
                   </div>
                 </div>
               </div>
@@ -182,13 +172,13 @@ export default function Page() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Téléphone / WhatsApp</label>
                   <input 
-                    type="email" 
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    type="tel" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="votre@email.com"
+                    placeholder="+212 6XX XXX XXX"
                     required
                   />
                 </div>
