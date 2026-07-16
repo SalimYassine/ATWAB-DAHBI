@@ -3,6 +3,8 @@
 import { Mail, Phone, MapPin, Zap, Shield, Award } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
+import { Navigation } from '@/components/navigation'
+import { Footer } from '@/components/footer'
 
 export default function Page() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
@@ -17,18 +19,9 @@ export default function Page() {
   }
 
   return (
-    <main className="w-full">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="text-2xl font-semibold text-primary">Salon Marocain</div>
-          <div className="hidden md:flex gap-8 text-sm font-medium">
-            <a href="#services" className="hover:text-primary transition">Services</a>
-            <a href="#portfolio" className="hover:text-primary transition">Portfolio</a>
-            <a href="#contact" className="hover:text-primary transition">Contact</a>
-          </div>
-        </div>
-      </nav>
+    <>
+      <Navigation />
+      <main className="w-full">
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 px-4 sm:px-6 lg:px-8">
@@ -223,12 +216,8 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-muted border-t border-border">
-        <div className="max-w-6xl mx-auto text-center text-muted-foreground text-sm">
-          <p>&copy; 2024 Tapisserie &amp; Décoration Marocaine. Tous droits réservés.</p>
-        </div>
-      </footer>
+      <Footer />
     </main>
+    </>
   )
 }
