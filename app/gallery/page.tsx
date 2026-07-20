@@ -161,7 +161,7 @@ export default function GalleryPage() {
             <h2 className="text-4xl font-bold text-foreground text-center mb-16">Nos chiffres clés</h2>
             <div className="grid md:grid-cols-4 gap-8">
               <div className="text-center">
-                <p className="text-5xl font-bold text-primary mb-2">100+</p>
+                <p className="text-5xl font-bold text-primary mb-2">200+</p>
                 <p className="text-muted-foreground">Projets complétés</p>
               </div>
               <div className="text-center">
