@@ -8,10 +8,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* About */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Tapisserie & Décoration</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold text-foreground mb-2">ATWAB DAHBI</h3>
+            <p className="text-xs text-primary mb-3 font-medium">Plus de 20 ans d&apos;expérience</p>
+            <p className="text-sm text-muted-foreground mb-4">
               Services professionnels de tapisserie, décoration et réparation pour votre salon marocain authentique.
             </p>
+            <p className="text-xs text-muted-foreground">Livraison partout au Maroc et en Europe</p>
           </div>
 
           {/* Quick Links */}
@@ -58,7 +60,7 @@ export function Footer() {
 
         <div className="border-t border-border pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; 2024 Tapisserie & Décoration Marocaine. Tous droits réservés.
+            &copy; 2024 ATWAB DAHBI. Tous droits réservés.
           </p>
         </div>
       </div>

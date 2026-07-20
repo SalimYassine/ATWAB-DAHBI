@@ -28,11 +28,19 @@ export default function Page() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
+              <div className="inline-block">
+                <div className="px-4 py-2 bg-accent/10 rounded-full border border-accent/20">
+                  <span className="text-accent font-medium text-sm">Plus de 20 ans d&apos;expérience</span>
+                </div>
+              </div>
               <h1 className="text-5xl sm:text-6xl font-bold text-foreground text-balance">
-                Transformez votre intérieur marocain
+                ATWAB DAHBI - Transformez votre intérieur marocain
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 Services professionnels d&apos;upholsterie, décoration et réparation de salons marocains authentiques. Nous redonnons vie à vos meubles avec expertise et passion.
+              </p>
+              <p className="text-sm text-muted-foreground font-medium">
+                ✓ Livraison partout au Maroc et en Europe
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
