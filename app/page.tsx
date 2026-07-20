@@ -51,12 +51,16 @@ export default function Page() {
                 </a>
               </div>
             </div>
-            <div className="relative h-96 rounded-lg overflow-hidden bg-muted">
-              <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">🏘️</div>
-                  <p className="text-muted-foreground">Galerie de projets à venir</p>
-                </div>
+            <div className="relative h-96 rounded-lg overflow-hidden bg-card border border-border hover:border-primary/50 transition">
+              <div className="w-full h-full bg-gradient-to-br from-primary/5 to-accent/5 flex flex-col items-center justify-center p-8 text-center group cursor-pointer">
+                <div className="text-6xl mb-4 group-hover:scale-110 transition duration-300">✨</div>
+                <h3 className="text-2xl font-semibold text-foreground mb-2">Nos Réalisations</h3>
+                <p className="text-muted-foreground mb-6">
+                  Explorez notre galerie complète avec plus de 8 projets de transformations réussies
+                </p>
+                <a href="/gallery" className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition inline-block">
+                  Voir tous les projets
+                </a>
               </div>
             </div>
           </div>

@@ -169,7 +169,7 @@ export default function GalleryPage() {
                 <p className="text-muted-foreground">Clients satisfaits</p>
               </div>
               <div className="text-center">
-                <p className="text-5xl font-bold text-primary mb-2">15+</p>
+                <p className="text-5xl font-bold text-primary mb-2">20+</p>
                 <p className="text-muted-foreground">Ans d&apos;expérience</p>
               </div>
               <div className="text-center">
