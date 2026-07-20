@@ -14,56 +14,56 @@ export default function GalleryPage() {
       title: 'Salon Marocain Classique',
       category: 'decoration',
       description: 'Salon marocain complet avec canapés, coussins et tapis traditionnels',
-      image: '🏘️',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.04%284%29-Fm8LjjsRoQrzk7fu0WlEjziLgJzjxX.jpeg',
     },
     {
       id: 2,
       title: 'Restauration de Canapé',
       category: 'tapisserie',
       description: 'Restauration complète d\'un ancien canapé marocain',
-      image: '🛋️',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%287%29-YLoWiwPdZbnEM2WmgpfoULysEGjS7W.jpeg',
     },
     {
       id: 3,
       title: 'Réparation d\'Urgence',
       category: 'reparation',
       description: 'Réparation structurelle d\'un fauteuil traditionnel',
-      image: '🪑',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.05%282%29-r67jQHFubucuHomc6R1d3XCXSH2s7j.jpeg',
     },
     {
       id: 4,
       title: 'Salon de Luxe',
       category: 'decoration',
       description: 'Création d\'un salon marocain haut de gamme avec accessoires premium',
-      image: '✨',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%282%29-faUQMj6MyNflERMqrehHpTNC6DGuqJ.jpeg',
     },
     {
       id: 5,
       title: 'Restauration Textiles',
       category: 'tapisserie',
       description: 'Remplacement complet des tissus avec motifs authentiques',
-      image: '🎨',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%283%29-UJjbk3ua8aQE0PVzU5nuwTnQdQBibl.jpeg',
     },
     {
       id: 6,
       title: 'Maintenance Complète',
       category: 'reparation',
       description: 'Maintenance annuelle d\'un ensemble de meubles marocains',
-      image: '🔧',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.05%281%29-eQ5Z58XIvNywg0svtvPrZXAkWTRVXC.jpeg',
     },
     {
       id: 7,
       title: 'Salon Moderne Marocain',
       category: 'decoration',
       description: 'Fusion de style traditionnel marocain et décoration moderne',
-      image: '🌟',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%286%29-TxXyB054iYpNkuGg1f0TuDSzifhAkE.jpeg',
     },
     {
       id: 8,
       title: 'Restauration Ancienne',
       category: 'tapisserie',
       description: 'Restauration d\'une pièce antique datant des années 50',
-      image: '👑',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%284%29-wwJRrZAgLV3kWoiIAb4hp2heCm8l6C.jpeg',
     },
   ]
 
@@ -126,11 +126,13 @@ export default function GalleryPage() {
                   key={project.id}
                   className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition cursor-pointer"
                 >
-                  {/* Image Placeholder */}
-                  <div className="relative h-64 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center overflow-hidden">
-                    <div className="text-6xl group-hover:scale-110 transition duration-300">
-                      {project.image}
-                    </div>
+                  {/* Image */}
+                  <div className="relative h-64 bg-muted overflow-hidden">
+                    <img 
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                    />
                   </div>
 
                   {/* Content */}

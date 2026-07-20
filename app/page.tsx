@@ -113,13 +113,20 @@ export default function Page() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="relative h-64 rounded-lg overflow-hidden bg-muted border border-border">
-                <div className="w-full h-full bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-5xl mb-4">✨</div>
-                    <p className="text-muted-foreground">Projet {i}</p>
-                  </div>
+            {[
+              { title: 'Salon Marocain Luxe', img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.04%284%29-Fm8LjjsRoQrzk7fu0WlEjziLgJzjxX.jpeg' },
+              { title: 'Salon Moderne', img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%282%29-faUQMj6MyNflERMqrehHpTNC6DGuqJ.jpeg' },
+              { title: 'Restauration Complète', img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.05%281%29-eQ5Z58XIvNywg0svtvPrZXAkWTRVXC.jpeg' },
+              { title: 'Rénovation Salon', img: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-07-16%20at%2022.09.07%283%29-UJjbk3ua8aQE0PVzU5nuwTnQdQBibl.jpeg' },
+            ].map((project, i) => (
+              <div key={i} className="relative h-64 rounded-lg overflow-hidden bg-muted border border-border group cursor-pointer">
+                <img 
+                  src={project.img}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition flex items-end justify-start p-6">
+                  <h3 className="text-white font-semibold text-lg">{project.title}</h3>
                 </div>
               </div>
             ))}
