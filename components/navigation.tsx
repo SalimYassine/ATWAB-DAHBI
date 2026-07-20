@@ -3,10 +3,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Moon, Sun } from 'lucide-react'
+import { useTheme } from './theme-provider'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const { theme, toggleTheme, mounted } = useTheme()
 
   const links = [
     { href: '/', label: 'Accueil' },
@@ -36,7 +38,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-4">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -52,16 +54,43 @@ export function Navigation() {
             >
               Contact
             </a>
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? (
+                  <Moon size={18} className="text-foreground" />
+                ) : (
+                  <Sun size={18} className="text-foreground" />
+                )}
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? (
+                  <Moon size={18} className="text-foreground" />
+                ) : (
+                  <Sun size={18} className="text-foreground" />
+                )}
+              </button>
+            )}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
