@@ -24,29 +24,37 @@ export default function Page() {
       <main className="w-full">
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 px-4 sm:px-6 lg:px-8 min-h-[600px] md:min-h-screen flex items-center" style={{
+        backgroundImage: 'url(/hero-bg.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}>
+        {/* Overlay for readability */}
+        <div className="absolute inset-0 bg-black/40 md:bg-black/30"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10 w-full">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div className="inline-block">
-                <div className="px-4 py-2 bg-accent/10 rounded-full border border-accent/20">
-                  <span className="text-accent font-medium text-sm">Plus de 20 ans d&apos;expérience</span>
+                <div className="px-4 py-2 bg-primary/90 rounded-full border border-primary/80">
+                  <span className="text-white font-medium text-sm">Plus de 20 ans d&apos;expérience</span>
                 </div>
               </div>
-              <h1 className="text-5xl sm:text-6xl font-bold text-foreground text-balance">
+              <h1 className="text-5xl sm:text-6xl font-bold text-white text-balance drop-shadow-lg">
                 ATWAB DAHBI - Transformez votre intérieur marocain
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-lg text-white/90 leading-relaxed drop-shadow-md">
                 Services professionnels d&apos;upholsterie, décoration et réparation de salons marocains authentiques. Nous redonnons vie à vos meubles avec expertise et passion.
               </p>
-              <p className="text-sm text-muted-foreground font-medium">
+              <p className="text-sm text-white/85 font-medium">
                 ✓ Livraison partout au Maroc et en Europe
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+                <button className="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                   Demander un devis
                 </button>
-                <a href="https://wa.me/212660728660" target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition text-center">
+                <a href="https://wa.me/212660728660" target="_blank" rel="noopener noreferrer" className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-black transition text-center">
                   WhatsApp
                 </a>
               </div>
