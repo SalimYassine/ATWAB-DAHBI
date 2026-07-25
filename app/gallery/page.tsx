@@ -15,7 +15,9 @@ export default function GalleryPage() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminPassword, setAdminPassword] = useState('')
   const [customProjects, setCustomProjects] = useState([])
+  const [deletedProjects, setDeletedProjects] = useState([])
   const [formData, setFormData] = useState({ title: '', category: 'decoration', description: '', imageUrl: '' })
+  const [lightboxImage, setLightboxImage] = useState(null)
 
   // Check if admin is logged in
   useEffect(() => {
@@ -23,10 +25,13 @@ export default function GalleryPage() {
     if (savedAdmin === 'true') setIsAdmin(true)
   }, [])
 
-  // Load custom projects from localStorage
+  // Load custom projects and deleted projects from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('customProjects')
     if (saved) setCustomProjects(JSON.parse(saved))
+    
+    const deleted = localStorage.getItem('deletedProjects')
+    if (deleted) setDeletedProjects(JSON.parse(deleted))
   }, [])
 
   const handleAddProject = () => {
@@ -43,10 +48,16 @@ export default function GalleryPage() {
     }
   }
 
-  const handleDeleteProject = (id) => {
-    const updated = customProjects.filter(p => p.id !== id)
-    setCustomProjects(updated)
-    localStorage.setItem('customProjects', JSON.stringify(updated))
+  const handleDeleteProject = (id, isCustom = false) => {
+    if (isCustom) {
+      const updated = customProjects.filter(p => p.id !== id)
+      setCustomProjects(updated)
+      localStorage.setItem('customProjects', JSON.stringify(updated))
+    } else {
+      const updated = [...deletedProjects, id]
+      setDeletedProjects(updated)
+      localStorage.setItem('deletedProjects', JSON.stringify(updated))
+    }
   }
 
   const handleAdminLogin = () => {
@@ -142,7 +153,7 @@ export default function GalleryPage() {
     { id: 'reparation', label: 'Réparation' },
   ]
 
-  const allProjects = [...projects, ...customProjects]
+  const allProjects = [...projects.filter(p => !deletedProjects.includes(p.id)), ...customProjects]
   const filteredProjects = selectedFilter === 'all'
     ? allProjects
     : allProjects.filter(p => p.category === selectedFilter)
@@ -222,18 +233,25 @@ export default function GalleryPage() {
               {filteredProjects.map((project) => (
                 <div
                   key={project.id}
-                  className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition cursor-pointer relative"
+                  className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition relative"
                 >
                   {/* Image */}
-                  <div className="relative h-64 bg-muted overflow-hidden">
+                  <div 
+                    className="relative h-64 bg-muted overflow-hidden cursor-pointer"
+                    onClick={() => setLightboxImage(project)}
+                  >
                     <img 
                       src={project.image || project.imageUrl}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                     />
-                    {isAdmin && customProjects.some(p => p.id === project.id) && (
+                    {isAdmin && (
                       <button
-                        onClick={() => handleDeleteProject(project.id)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          const isCustom = customProjects.some(p => p.id === project.id)
+                          handleDeleteProject(project.id, isCustom)
+                        }}
                         className="absolute top-2 right-2 p-1 bg-red-500/90 hover:bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 transition"
                       >
                         <X size={16} />
@@ -344,6 +362,35 @@ export default function GalleryPage() {
                     Se connecter
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Lightbox Modal */}
+        {lightboxImage && (
+          <div 
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-40 p-4"
+            onClick={() => setLightboxImage(null)}
+          >
+            <div 
+              className="relative max-w-4xl w-full max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setLightboxImage(null)}
+                className="absolute -top-10 right-0 text-white hover:text-gray-300 transition"
+              >
+                <X size={32} />
+              </button>
+              <img 
+                src={lightboxImage.image || lightboxImage.imageUrl}
+                alt={lightboxImage.title}
+                className="w-full h-full object-contain"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white p-6">
+                <h3 className="text-2xl font-bold mb-2">{lightboxImage.title}</h3>
+                <p className="text-gray-200">{lightboxImage.description}</p>
               </div>
             </div>
           </div>
