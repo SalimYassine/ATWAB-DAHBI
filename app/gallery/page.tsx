@@ -2,11 +2,41 @@
 
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Plus, X } from 'lucide-react'
 
 export default function GalleryPage() {
   const [selectedFilter, setSelectedFilter] = useState('all')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [customProjects, setCustomProjects] = useState([])
+  const [formData, setFormData] = useState({ title: '', category: 'decoration', description: '', imageUrl: '' })
+
+  // Load custom projects from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('customProjects')
+    if (saved) setCustomProjects(JSON.parse(saved))
+  }, [])
+
+  const handleAddProject = () => {
+    if (formData.title && formData.description && formData.imageUrl) {
+      const newProject = {
+        id: Date.now(),
+        ...formData
+      }
+      const updated = [...customProjects, newProject]
+      setCustomProjects(updated)
+      localStorage.setItem('customProjects', JSON.stringify(updated))
+      setFormData({ title: '', category: 'decoration', description: '', imageUrl: '' })
+      setIsModalOpen(false)
+    }
+  }
+
+  const handleDeleteProject = (id) => {
+    const updated = customProjects.filter(p => p.id !== id)
+    setCustomProjects(updated)
+    localStorage.setItem('customProjects', JSON.stringify(updated))
+  }
 
   const projects = [
     {
@@ -74,9 +104,10 @@ export default function GalleryPage() {
     { id: 'reparation', label: 'Réparation' },
   ]
 
+  const allProjects = [...projects, ...customProjects]
   const filteredProjects = selectedFilter === 'all'
-    ? projects
-    : projects.filter(p => p.category === selectedFilter)
+    ? allProjects
+    : allProjects.filter(p => p.category === selectedFilter)
 
   return (
     <>
@@ -120,19 +151,37 @@ export default function GalleryPage() {
         {/* Gallery Grid */}
         <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-foreground">Nos Projets</h2>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition"
+              >
+                <Plus size={20} />
+                Ajouter une photo
+              </button>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredProjects.map((project) => (
                 <div
                   key={project.id}
-                  className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition cursor-pointer"
+                  className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition cursor-pointer relative"
                 >
                   {/* Image */}
                   <div className="relative h-64 bg-muted overflow-hidden">
                     <img 
-                      src={project.image}
+                      src={project.image || project.imageUrl}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                     />
+                    {customProjects.some(p => p.id === project.id) && (
+                      <button
+                        onClick={() => handleDeleteProject(project.id)}
+                        className="absolute top-2 right-2 p-1 bg-red-500/90 hover:bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 transition"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
                   </div>
 
                   {/* Content */}
@@ -195,6 +244,87 @@ export default function GalleryPage() {
             </Link>
           </div>
         </section>
+
+        {/* Add Photo Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg p-8 max-w-md w-full border border-border">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-foreground">Ajouter une photo</h2>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-1 hover:bg-muted rounded transition"
+                >
+                  <X size={24} className="text-foreground" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Titre</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    placeholder="Titre du projet"
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Catégorie</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="Description du projet..."
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary h-24 resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">URL de l&apos;image</label>
+                  <input
+                    type="url"
+                    value={formData.imageUrl}
+                    onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                    placeholder="https://..."
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <p className="text-xs text-muted-foreground mt-2">Collez l&apos;URL d&apos;une image (JPG, PNG, etc.)</p>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleAddProject}
+                    disabled={!formData.title || !formData.description || !formData.imageUrl}
+                    className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Ajouter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Footer />
       </main>
