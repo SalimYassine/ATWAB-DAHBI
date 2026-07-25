@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Plus, X, LogOut } from 'lucide-react'
 
-const ADMIN_PASSWORD = 'ATWAB2024'
+const ADMIN_PASSWORD = 'ATWAB2026'
 
 export default function GalleryPage() {
   const [selectedFilter, setSelectedFilter] = useState('all')
