@@ -2,11 +2,90 @@
 
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Plus, X, LogOut } from 'lucide-react'
+
+const ADMIN_PASSWORD = 'ATWAB2026'
 
 export default function GalleryPage() {
   const [selectedFilter, setSelectedFilter] = useState('all')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [adminPassword, setAdminPassword] = useState('')
+  const [customProjects, setCustomProjects] = useState([])
+  const [deletedProjects, setDeletedProjects] = useState([])
+  const [formData, setFormData] = useState({ title: '', category: 'decoration', description: '', imageUrl: '' })
+  const [lightboxImage, setLightboxImage] = useState(null)
+
+  // Check if admin is logged in
+  useEffect(() => {
+    const savedAdmin = localStorage.getItem('isAdmin')
+    if (savedAdmin === 'true') setIsAdmin(true)
+  }, [])
+
+  // Load custom projects and deleted projects from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('customProjects')
+    if (saved) setCustomProjects(JSON.parse(saved))
+    
+    const deleted = localStorage.getItem('deletedProjects')
+    if (deleted) setDeletedProjects(JSON.parse(deleted))
+  }, [])
+
+  const handleAddProject = () => {
+    if (formData.title && formData.description && formData.imageUrl) {
+      const newProject = {
+        id: Date.now(),
+        ...formData
+      }
+      const updated = [...customProjects, newProject]
+      setCustomProjects(updated)
+      localStorage.setItem('customProjects', JSON.stringify(updated))
+      setFormData({ title: '', category: 'decoration', description: '', imageUrl: '' })
+      setIsModalOpen(false)
+    }
+  }
+
+  const handleDeleteProject = (id, isCustom = false) => {
+    if (isCustom) {
+      const updated = customProjects.filter(p => p.id !== id)
+      setCustomProjects(updated)
+      localStorage.setItem('customProjects', JSON.stringify(updated))
+    } else {
+      const updated = [...deletedProjects, id]
+      setDeletedProjects(updated)
+      localStorage.setItem('deletedProjects', JSON.stringify(updated))
+    }
+  }
+
+  const handleAdminLogin = () => {
+    if (adminPassword === ADMIN_PASSWORD) {
+      setIsAdmin(true)
+      localStorage.setItem('isAdmin', 'true')
+      setAdminPassword('')
+      setIsLoginOpen(false)
+    } else {
+      alert('Mot de passe incorrect')
+    }
+  }
+
+  const handleAdminLogout = () => {
+    setIsAdmin(false)
+    localStorage.removeItem('isAdmin')
+  }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData({...formData, imageUrl: reader.result})
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   const projects = [
     {
@@ -74,9 +153,10 @@ export default function GalleryPage() {
     { id: 'reparation', label: 'Réparation' },
   ]
 
+  const allProjects = [...projects.filter(p => !deletedProjects.includes(p.id)), ...customProjects]
   const filteredProjects = selectedFilter === 'all'
-    ? projects
-    : projects.filter(p => p.category === selectedFilter)
+    ? allProjects
+    : allProjects.filter(p => p.category === selectedFilter)
 
   return (
     <>
@@ -120,19 +200,63 @@ export default function GalleryPage() {
         {/* Gallery Grid */}
         <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-foreground">Nos Projets</h2>
+              <div className="flex items-center gap-2">
+                {isAdmin ? (
+                  <>
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition"
+                    >
+                      <Plus size={20} />
+                      Ajouter une photo
+                    </button>
+                    <button
+                      onClick={handleAdminLogout}
+                      className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-border transition"
+                    >
+                      <LogOut size={20} />
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setIsLoginOpen(true)}
+                    className="text-xs text-muted-foreground hover:text-foreground transition"
+                  >
+                    Admin
+                  </button>
+                )}
+              </div>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredProjects.map((project) => (
                 <div
                   key={project.id}
-                  className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition cursor-pointer"
+                  className="group rounded-lg overflow-hidden border border-border hover:border-primary/50 transition relative"
                 >
                   {/* Image */}
-                  <div className="relative h-64 bg-muted overflow-hidden">
+                  <div 
+                    className="relative h-64 bg-muted overflow-hidden cursor-pointer"
+                    onClick={() => setLightboxImage(project)}
+                  >
                     <img 
-                      src={project.image}
+                      src={project.image || project.imageUrl}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                     />
+                    {isAdmin && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          const isCustom = customProjects.some(p => p.id === project.id)
+                          handleDeleteProject(project.id, isCustom)
+                        }}
+                        className="absolute top-2 right-2 p-1 bg-red-500/90 hover:bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 transition"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
                   </div>
 
                   {/* Content */}
@@ -195,6 +319,167 @@ export default function GalleryPage() {
             </Link>
           </div>
         </section>
+
+        {/* Admin Login Modal */}
+        {isLoginOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg p-8 max-w-sm w-full border border-border">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-foreground">Connexion Admin</h2>
+                <button
+                  onClick={() => setIsLoginOpen(false)}
+                  className="p-1 hover:bg-muted rounded transition"
+                >
+                  <X size={24} className="text-foreground" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Mot de passe</label>
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                    placeholder="Entrez le mot de passe"
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setIsLoginOpen(false)}
+                    className="flex-1 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleAdminLogin}
+                    className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition"
+                  >
+                    Se connecter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Lightbox Modal */}
+        {lightboxImage && (
+          <div 
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-40 p-4"
+            onClick={() => setLightboxImage(null)}
+          >
+            <div 
+              className="relative max-w-4xl w-full max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setLightboxImage(null)}
+                className="absolute -top-10 right-0 text-white hover:text-gray-300 transition"
+              >
+                <X size={32} />
+              </button>
+              <img 
+                src={lightboxImage.image || lightboxImage.imageUrl}
+                alt={lightboxImage.title}
+                className="w-full h-full object-contain"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white p-6">
+                <h3 className="text-2xl font-bold mb-2">{lightboxImage.title}</h3>
+                <p className="text-gray-200">{lightboxImage.description}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Photo Modal */}
+        {isModalOpen && isAdmin && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg p-8 max-w-md w-full border border-border">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-foreground">Ajouter une photo</h2>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-1 hover:bg-muted rounded transition"
+                >
+                  <X size={24} className="text-foreground" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Titre</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    placeholder="Titre du projet"
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Catégorie</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="Description du projet..."
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary h-24 resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Photo</label>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg"
+                    onChange={handleImageUpload}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground file:bg-primary file:text-primary-foreground file:border-0 file:rounded file:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  {formData.imageUrl && (
+                    <div className="mt-2 relative w-full h-32 rounded-lg overflow-hidden border border-border">
+                      <img src={formData.imageUrl} alt="preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-2">Sélectionnez une image PNG ou JPG</p>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleAddProject}
+                    disabled={!formData.title || !formData.description || !formData.imageUrl}
+                    className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Ajouter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Footer />
       </main>
