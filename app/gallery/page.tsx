@@ -4,13 +4,24 @@ import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, LogOut } from 'lucide-react'
+
+const ADMIN_PASSWORD = 'ATWAB2024'
 
 export default function GalleryPage() {
   const [selectedFilter, setSelectedFilter] = useState('all')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [adminPassword, setAdminPassword] = useState('')
   const [customProjects, setCustomProjects] = useState([])
   const [formData, setFormData] = useState({ title: '', category: 'decoration', description: '', imageUrl: '' })
+
+  // Check if admin is logged in
+  useEffect(() => {
+    const savedAdmin = localStorage.getItem('isAdmin')
+    if (savedAdmin === 'true') setIsAdmin(true)
+  }, [])
 
   // Load custom projects from localStorage
   useEffect(() => {
@@ -36,6 +47,22 @@ export default function GalleryPage() {
     const updated = customProjects.filter(p => p.id !== id)
     setCustomProjects(updated)
     localStorage.setItem('customProjects', JSON.stringify(updated))
+  }
+
+  const handleAdminLogin = () => {
+    if (adminPassword === ADMIN_PASSWORD) {
+      setIsAdmin(true)
+      localStorage.setItem('isAdmin', 'true')
+      setAdminPassword('')
+      setIsLoginOpen(false)
+    } else {
+      alert('Mot de passe incorrect')
+    }
+  }
+
+  const handleAdminLogout = () => {
+    setIsAdmin(false)
+    localStorage.removeItem('isAdmin')
   }
 
   const projects = [
@@ -153,13 +180,32 @@ export default function GalleryPage() {
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Nos Projets</h2>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition"
-              >
-                <Plus size={20} />
-                Ajouter une photo
-              </button>
+              <div className="flex items-center gap-2">
+                {isAdmin ? (
+                  <>
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition"
+                    >
+                      <Plus size={20} />
+                      Ajouter une photo
+                    </button>
+                    <button
+                      onClick={handleAdminLogout}
+                      className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-border transition"
+                    >
+                      <LogOut size={20} />
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setIsLoginOpen(true)}
+                    className="text-xs text-muted-foreground hover:text-foreground transition"
+                  >
+                    Admin
+                  </button>
+                )}
+              </div>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredProjects.map((project) => (
@@ -174,7 +220,7 @@ export default function GalleryPage() {
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                     />
-                    {customProjects.some(p => p.id === project.id) && (
+                    {isAdmin && customProjects.some(p => p.id === project.id) && (
                       <button
                         onClick={() => handleDeleteProject(project.id)}
                         className="absolute top-2 right-2 p-1 bg-red-500/90 hover:bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 transition"
@@ -245,8 +291,55 @@ export default function GalleryPage() {
           </div>
         </section>
 
+        {/* Admin Login Modal */}
+        {isLoginOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-card rounded-lg p-8 max-w-sm w-full border border-border">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-foreground">Connexion Admin</h2>
+                <button
+                  onClick={() => setIsLoginOpen(false)}
+                  className="p-1 hover:bg-muted rounded transition"
+                >
+                  <X size={24} className="text-foreground" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Mot de passe</label>
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                    placeholder="Entrez le mot de passe"
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setIsLoginOpen(false)}
+                    className="flex-1 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleAdminLogin}
+                    className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition"
+                  >
+                    Se connecter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Add Photo Modal */}
-        {isModalOpen && (
+        {isModalOpen && isAdmin && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-card rounded-lg p-8 max-w-md w-full border border-border">
               <div className="flex justify-between items-center mb-6">
