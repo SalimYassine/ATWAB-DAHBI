@@ -65,6 +65,17 @@ export default function GalleryPage() {
     localStorage.removeItem('isAdmin')
   }
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData({...formData, imageUrl: reader.result})
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const projects = [
     {
       id: 1,
@@ -388,15 +399,19 @@ export default function GalleryPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">URL de l&apos;image</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Photo</label>
                   <input
-                    type="url"
-                    value={formData.imageUrl}
-                    onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-                    placeholder="https://..."
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg"
+                    onChange={handleImageUpload}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground file:bg-primary file:text-primary-foreground file:border-0 file:rounded file:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                  <p className="text-xs text-muted-foreground mt-2">Collez l&apos;URL d&apos;une image (JPG, PNG, etc.)</p>
+                  {formData.imageUrl && (
+                    <div className="mt-2 relative w-full h-32 rounded-lg overflow-hidden border border-border">
+                      <img src={formData.imageUrl} alt="preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-2">Sélectionnez une image PNG ou JPG</p>
                 </div>
 
                 <div className="flex gap-3 pt-4">
