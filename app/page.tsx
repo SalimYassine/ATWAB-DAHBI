@@ -9,13 +9,40 @@ import { Footer } from '@/components/footer'
 export default function Page() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    setFormData({ name: '', phone: '', message: '' })
-    setTimeout(() => setSubmitted(false), 3000)
+    setIsLoading(true)
+    
+    try {
+      const response = await fetch('/api/send-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSubmitted(true)
+        setFormData({ name: '', phone: '', message: '' })
+        // Open WhatsApp with the message
+        if (data.whatsappUrl) {
+          window.open(data.whatsappUrl, '_blank')
+        }
+        setTimeout(() => setSubmitted(false), 3000)
+      } else {
+        alert(data.error || 'Erreur lors de l\'envoi du message')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Erreur lors de l\'envoi du message')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -223,9 +250,10 @@ export default function Page() {
 
                 <button 
                   type="submit"
-                  className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition"
+                  disabled={isLoading}
+                  className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {submitted ? '✓ Message envoyé!' : 'Envoyer le message'}
+                  {submitted ? '✓ Message envoyé!' : isLoading ? 'Envoi en cours...' : 'Envoyer le message'}
                 </button>
               </form>
             </div>
